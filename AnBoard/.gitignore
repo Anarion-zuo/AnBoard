@@ -1,0 +1,5 @@
+*.cache
+*.sim
+vivado*.str
+*.jou
+*.log
