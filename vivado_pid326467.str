@@ -1,0 +1,123 @@
+/*
+
+Xilinx Vivado v2022.1 (64-bit) [Major: 2022, Minor: 1]
+SW Build: 3526262 on Mon Apr 18 15:47:01 MDT 2022
+IP Build: 3524634 on Mon Apr 18 20:55:01 MDT 2022
+
+Process ID (PID): 326467
+License: Customer
+Mode: GUI Mode
+
+Current time: 	Wed Aug 03 14:35:10 CST 2022
+Time zone: 	China Standard Time (Asia/Shanghai)
+
+OS: Manjaro Linux
+OS Version: 5.10.131-1-MANJARO
+OS Architecture: amd64
+Available processors (cores): 8
+
+Display: 1
+Screen size: 1920x1080
+Screen resolution (DPI): 100
+Available screens: 2
+Default font: family=Dialog,name=Dialog,style=plain,size=15
+Scale size: 19
+
+Java version: 	11.0.11 64-bit
+Java home: 	/home/anarion/pacroot/opt/Xilinx/Vivado/2022.1/tps/lnx64/jre11.0.11_9
+Java executable: 	/home/anarion/pacroot/opt/Xilinx/Vivado/2022.1/tps/lnx64/jre11.0.11_9/bin/java
+Java arguments: 	[-Dsun.java2d.pmoffscreen=false, -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2, -Dsun.java2d.xrender=false, -Djdk.gtk.version=2, -Dsun.java2d.uiScale.enabled=false, -Xverify:none, -Dswing.aatext=true, -XX:-UsePerfData, -Djdk.map.althashing.threshold=512, -XX:StringTableSize=4072, --add-opens=java.desktop/com.sun.awt=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.desktop/sun.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/java.awt.event=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.base/java.nio=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.table=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.desktop/sun.awt.shell=ALL-UNNAMED, --add-exports=java.base/sun.security.action=ALL-UNNAMED, --add-exports=java.desktop/sun.font=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, -XX:NewSize=60m, -XX:MaxNewSize=60m, -Xms256m, -Xmx3072m, -Xss5m, -Xrs]
+Java initial memory (-Xms): 	256 MB
+Java maximum memory (-Xmx):	 3 GB
+
+
+User name: 	anarion
+User home directory: /home/anarion
+User working directory: /home/anarion/Projects/AnBoard
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /home/anarion/pacroot/opt/Xilinx/Vivado
+HDI_APPROOT: /home/anarion/pacroot/opt/Xilinx/Vivado/2022.1
+RDI_DATADIR: /home/anarion/pacroot/opt/Xilinx/Vivado/2022.1/data
+RDI_BINDIR: /home/anarion/pacroot/opt/Xilinx/Vivado/2022.1/bin
+
+Vivado preferences file: /home/anarion/.Xilinx/Vivado/2022.1/vivado.xml
+Vivado preferences directory: /home/anarion/.Xilinx/Vivado/2022.1/
+Vivado layouts directory: /home/anarion/.Xilinx/Vivado/2022.1/data/layouts
+PlanAhead jar file: 	/home/anarion/pacroot/opt/Xilinx/Vivado/2022.1/lib/classes/planAhead.jar
+Vivado log file: 	/home/anarion/Projects/AnBoard/vivado.log
+Vivado journal file: 	/home/anarion/Projects/AnBoard/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-326467-anarion-x542un
+
+Xilinx Environment Variables
+----------------------------
+XILINX: /home/anarion/pacroot/opt/Xilinx/Vivado/2022.1/ids_lite/ISE
+XILINX_DSP: /home/anarion/pacroot/opt/Xilinx/Vivado/2022.1/ids_lite/ISE
+XILINX_HLS: /home/anarion/pacroot/opt/Xilinx/Vitis_HLS/2022.1
+XILINX_PLANAHEAD: /home/anarion/pacroot/opt/Xilinx/Vivado/2022.1
+XILINX_VITIS: 
+XILINX_VIVADO: /home/anarion/pacroot/opt/Xilinx/Vivado/2022.1
+XILINX_VIVADO_HLS: /home/anarion/pacroot/opt/Xilinx/Vivado/2022.1
+
+
+GUI allocated memory:	256 MB
+GUI max memory:		3,072 MB
+Engine allocated memory: 1,725 MB
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// WARNING: HTimer (HSTRUtils Dump STR Log Timer) is taking 1704ms to process. Increasing delay to 5000 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1708 ms.
+// HMemoryUtils.trashcanNow. Engine heap size: 1,725 MB. GUI used memory: 63 MB. Current time: 8/3/22, 2:35:12 PM CST
+// WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
+selectList(PAResourceQtoS.SyntheticaGettingStartedView_RECENT_PROJECTS, "/home/anarion/Projects/AnBoard/AnBoard/AnBoard.xpr", 0); // r
+// Opening Vivado Project: /home/anarion/Projects/AnBoard/AnBoard/AnBoard.xpr. Version: Vivado v2022.1 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: FLOW_ADDED
+// TclEventType: MSGMGR_MOVEMSG
+// Tcl Message: open_project /home/anarion/Projects/AnBoard/AnBoard/AnBoard.xpr 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_NEW
+// Tcl Message: open_project /home/anarion/Projects/AnBoard/AnBoard/AnBoard.xpr 
+// Tcl Message: INFO: [filemgmt 56-3] Default IP Output Path : Could not find the directory '/home/anarion/Projects/AnBoard/AnBoard/AnBoard.gen/sources_1'. 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified 
+// HMemoryUtils.trashcanNow. Engine heap size: 1,774 MB. GUI used memory: 64 MB. Current time: 8/3/22, 2:35:51 PM CST
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 122 MB (+125587kb) [00:01:05]
+// [Engine Memory]: 1,802 MB (+1738471kb) [00:01:05]
+// WARNING: HEventQueue.dispatchEvent() is taking  3594 ms.
+// Tcl Message: INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/home/anarion/pacroot/opt/Xilinx/Vivado/2022.1/data/ip'. 
+// Project name: AnBoard; location: /home/anarion/Projects/AnBoard/AnBoard; part: xc7a35tcpg236-1
+// Tcl Message: open_project: Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 7532.422 ; gain = 78.133 ; free physical = 268 ; free virtual = 14248 
+// Elapsed time: 13 seconds
+dismissDialog("Open Project"); // bA
+// Tcl Message: update_compile_order -fileset sources_1 
+selectButton(PAResourceAtoD.CmdMsgDialog_OPEN_MESSAGES_VIEW, "Open Messages View"); // a
+// Run Command: PAResourceCommand.PACommandNames_MESSAGE_WINDOW
+dismissDialog("Critical Messages"); // a
