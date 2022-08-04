@@ -1,37 +1,64 @@
 #! /usr/bin/python3
+from fileinput import filename
 import sys
 import re
 import subprocess
 import io
 import os
+import platform
 
-casename = sys.argv[1]
-# casename = "tests/addi"
-print("creating hex memfile for test case <" + casename +">")
-compiled_out = ""
-proc1 = os.system("clang --target=riscv64 -march=rv64gc " + casename + ".asm -c -o " + casename + ".compiled")
-proc2 = os.popen("riscv64-unknown-elf-objdump -d " + casename + ".compiled")
-objdump_out = proc2.read()
-os.remove(casename + ".compiled")
-f = io.StringIO(objdump_out)
+def make_mem_hex(casename: str):
+    print("creating hex memfile for test case <" + casename +">")
 
-os.remove(casename + ".mem")
-out_file = open(casename + ".mem", 'a')
-while True:
-    line = f.readline()
-    if len(line) == 0:
-        break
-    regex = ":\t[0-9a-fA-F]{8}"
-    x = re.search(regex, line)
-    if x is None:
-        continue
-    mem_line = x[0][2:]
-    print(line[:-1])
-    print(bin(int(mem_line, 16)))
-    byte_list = []
-    for i in range(4):
-        byte_list.append(mem_line[i * 2 : i * 2 + 2])
-    for i in range(4):
-        out_file.write(byte_list[3 - i] + ' ')
-    out_file.write('\n')
-out_file.close()
+    rv_objdump_path = ""
+    rv_as_path = ""
+    if platform.system() == "Windows":
+        rv_objdump_path = "C:/SysGCC/risc-v/bin/riscv64-unknown-elf-objdump"
+        rv_as_path = "C:/SysGCC/risc-v/bin/riscv64-unknown-elf-as"
+    else:
+        rv_objdump_path = "riscv64-unknown-elf-objdump"
+        rv_as_path = "as"
+
+    print("presently on", platform.system())
+    print("objdump path:", rv_objdump_path)
+    print("as path:", rv_as_path)
+
+    path_prefix = "tests/"
+    file_prefix = casename + '/' + casename
+    file_name = path_prefix + file_prefix
+    mem_out_path = "out/instr.mem"
+    print("working on files", file_name + '.*')
+
+    print("running as...")
+    proc1 = os.system(rv_as_path + ' ' + file_name + ".asm -o " + file_name + ".o")
+    print("running objdump")
+    proc2 = os.popen(rv_objdump_path + " -d " + file_name + ".o")
+    objdump_out = proc2.read()
+    os.remove(file_name + ".o")
+    f = io.StringIO(objdump_out)
+
+    print("generating mem file")
+    try:
+        os.remove(mem_out_path)
+    except:
+        pass
+    out_file = open(mem_out_path, 'x')
+    while True:
+        line = f.readline()
+        if len(line) == 0:
+            break
+        regex = ":\t[0-9a-fA-F]{8}"
+        x = re.search(regex, line)
+        if x is None:
+            continue
+        mem_line = x[0][2:]
+        print(line[:-1])
+        print(bin(int(mem_line, 16)))
+        byte_list = []
+        for i in range(4):
+            byte_list.append(mem_line[i * 2 : i * 2 + 2])
+        for i in range(4):
+            out_file.write(byte_list[3 - i] + ' ')
+        out_file.write('\n')
+    out_file.close()
+    print("mem file generated")

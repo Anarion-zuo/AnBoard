@@ -34,7 +34,7 @@ module RegMemory(
         // for (integer i = 0; i < ADDR_MAX; i = i + 1)
         //     internal_mem_storage[i] = 8'b0;
         // internal_mem_storage[0] = 1;
-        $readmemh("../../../../tests/addi.mem", internal_mem_storage);
+        $readmemh("../../../../out/instr.mem", internal_mem_storage);
     end
 
     always @(addr or we) begin

@@ -31,7 +31,7 @@ module ALU(
     reg[3:0] ADD = 4'b0010, 
              SUB = 4'b0110,
              SLT = 4'b0111,
-             SLIU = 4'b1000,
+             SLTU = 4'b1000,
              AND = 4'b0000,
              OR = 4'b0001,
              XOR = 4'b0010,
@@ -44,7 +44,9 @@ module ALU(
     assign cf = out[64];
     assign sf = out[63];
     assign zf = ~|out[63:0];
-
+    
+    reg[63:0] temp;
+    
     always @(aluOp or s1 or s2) begin
         case(aluOp)
             AND: out = s1 & s2;
@@ -54,8 +56,8 @@ module ALU(
             end
             SUB: out = s1 - s2;
             SLT: begin
-                wire[63:0] diff = s1 - s2;
-                out = diff[63] == 1'b1;
+                temp = s1 - s2;
+                out = temp[63] == 1'b1 ? 64'b1 : 64'b0;
             end
             SLTU: out = s1 < s2;
             XOR: out = s1 ^ s2;

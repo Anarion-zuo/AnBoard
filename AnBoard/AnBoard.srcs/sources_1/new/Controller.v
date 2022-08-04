@@ -19,20 +19,32 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`define dump_regs(REGFILE) \
-    $display("=======================");\
-    for (integer i = 0; i < 32; i = i + 1) begin\
-        $display("1:\t0x%h", REGFILE.regs[i]);\
-    end\
-    $display("=======================");
-
-
 module Controller(
     input[31:0] instr
     );
+`define dump_regs(REGFILE) \
+    $display("=======================");\
+    for (integer i = 0; i < 32; i = i + 1) begin\
+        $display("x%d:\t0x%h", i, REGFILE.regs[i]);\
+    end\
+    $display("=======================");
+
+`define dump_regs_tofile(REGFILE) \
+    $display("---begin reg file dump tofile---");\
+    temp = $fseek(dump_reg_state_fd, 0, 0);\
+    for (integer i = 0; i < 32; i = i + 1) begin\
+        $fdisplay(dump_reg_state_fd, "x%d:\t0x%h", i, REGFILE.regs[i]);\
+    end\
+    $fflush(dump_reg_state_fd);\
+    $display("---end reg file dump tofile---");
 
     localparam OP_IMM = 5'b00100,
                OP = 5'b01100;
+    integer dump_reg_state_fd, temp;
+
+    initial begin
+        dump_reg_state_fd = $fopen("../../../../out/reg_state.out", "w");
+    end
 
     // decode
     wire[6:0] opcode;
@@ -118,7 +130,10 @@ module Controller(
             OP: begin
                 // arith with regs
             end
-            default: $display("unknow opcode 0x%h", opcode);
+            default: begin
+                $display("unknow opcode 0x%h", opcode);
+                reg_we = 1'b0;
+            end
         endcase
     end
 
@@ -126,6 +141,7 @@ module Controller(
     // automatically done
     always @(register_dest) begin
         `dump_regs(registerFile)
+        `dump_regs_tofile(registerFile)
     end
 
 endmodule
