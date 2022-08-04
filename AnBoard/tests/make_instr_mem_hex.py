@@ -17,7 +17,7 @@ def make_mem_hex(casename: str):
         rv_as_path = "C:/SysGCC/risc-v/bin/riscv64-unknown-elf-as"
     else:
         rv_objdump_path = "riscv64-unknown-elf-objdump"
-        rv_as_path = "as"
+        rv_as_path = "riscv64-unknown-elf-as"
 
     print("presently on", platform.system())
     print("objdump path:", rv_objdump_path)
