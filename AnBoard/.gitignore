@@ -3,3 +3,7 @@
 vivado*.str
 *.jou
 *.log
+*.tmp
+xelab.pb
+out
+/**/__pycache__
