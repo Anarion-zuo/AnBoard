@@ -8,7 +8,7 @@ import os
 import platform
 
 def make_mem_hex(casename: str):
-    print("creating hex memfile for test case <" + casename +">")
+    print("creating hex memfile for test file <" + casename +">")
 
     rv_objdump_path = ""
     rv_as_path = ""
@@ -24,7 +24,7 @@ def make_mem_hex(casename: str):
     print("as path:", rv_as_path)
 
     path_prefix = "tests/"
-    file_prefix = casename + '/' + casename
+    file_prefix = casename
     file_name = path_prefix + file_prefix
     mem_out_path = "out/instr.mem"
     print("working on files", file_name + '.*')
@@ -43,6 +43,7 @@ def make_mem_hex(casename: str):
     except:
         pass
     out_file = open(mem_out_path, 'x')
+    instr_count = 0
     while True:
         line = f.readline()
         if len(line) == 0:
@@ -58,7 +59,11 @@ def make_mem_hex(casename: str):
         for i in range(4):
             byte_list.append(mem_line[i * 2 : i * 2 + 2])
         for i in range(4):
-            out_file.write(byte_list[3 - i] + ' ')
-        out_file.write('\n')
+            out_file.write(byte_list[3 - i] + '\n')
+        # out_file.write('\n')
+        instr_count += 1
     out_file.close()
     print("mem file generated")
+    out_instr_count_file = open("out/instr_count.in", 'w')
+    out_instr_count_file.write(str(instr_count))
+    out_instr_count_file.close()
