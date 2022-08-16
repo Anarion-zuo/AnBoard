@@ -7,3 +7,4 @@ vivado*.str
 xelab.pb
 out
 /**/__pycache__
+test_list

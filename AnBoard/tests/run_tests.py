@@ -1,23 +1,7 @@
 from test_case import TestCase
 import os
 import platform
-
-
-test_cases = [
-    {
-        "name": "addi",
-        "objs": ["addi", "addi2"]
-    },
-    {
-        "name": "ori"
-    },
-    {
-        "name": "andi"
-    },
-    {
-        "name": "xori"
-    }
-]
+from test_list import test_cases
 
 simulate_path = "AnBoard.sim/sim_1/behav/xsim/"
 cur_path = os.getcwd()
