@@ -76,7 +76,6 @@ module Controller(
     wire[4:0] register_dest;
     wire[4:0] register_src_1;
     wire[4:0] register_src_2;
-    wire[20:0] imm_val;
     // alu
     reg[63:0] aluS1;
     reg[63:0] aluS2;
@@ -117,8 +116,7 @@ module Controller(
         .funct7(funct7),
         .register_dest(register_dest),
         .register_src_1(register_src_1),
-        .register_src_2(register_src_2),
-        .imm_val(imm_val)
+        .register_src_2(register_src_2)
     );
 
     // fetch instruction
@@ -142,10 +140,21 @@ module Controller(
         end
     end
 
-    // read register
+    // decode
+    reg instr_decoded = 1'b0;
     always @(instr_fetched) begin
-        if (instr_fetched == 1'b1) begin
-        instr_fetched = 1'b0;
+        if (instr_fetched === 1'b1) begin
+            instr_fetched = 1'b0;
+            decoder.launch = 1'b1;
+            instr_decoded = 1'b1;
+        end
+    end
+
+    // read register
+    always @(instr_decoded) begin
+        if (instr_decoded == 1'b1 && decoder.done === 1'b1) begin
+        instr_decoded = 1'b0;
+        decoder.done = 1'b0;
         registerFile.re = 1'b1;
         registerFile.we = 1'b0;
         registerFile.launch = 1'b1;
@@ -159,7 +168,7 @@ module Controller(
             OP_IMM: begin
                 // arith with immediate values
                 aluS1 = registerFile.read_data1;
-                aluS2 = imm_val;
+                aluS2 = decoder.imm_val;
                 aluout_write_regfile = 1'b1;
             end
             OP: begin
@@ -184,19 +193,21 @@ module Controller(
         if (registerFile.done == 1'b1) begin
         case (funct3)
             3'b000: begin
-                if (imm_val[11:6] == 6'b010000) begin
+                if (decoder.imm_val[11:6] == 6'b010000) begin
                     if (opcode[6:2] == OP_IMM) aluS2[11:6] = 1'b0;
                     aluOp = ALU.SUB;
                 end else aluOp = ALU.ADD;
             end
-            3'b010: aluOp = ALU.SLT;
             3'b100: aluOp = ALU.XOR;
             3'b110: aluOp = ALU.OR;
             3'b111: aluOp = ALU.AND;
+            // compare
+            3'b010: aluOp = ALU.SLT;
+            3'b011: aluOp = ALU.SLTU;
             // shifts
             3'b001: aluOp = ALU.SLL;
             3'b101: begin
-                if (imm_val[11:6] == 6'b010000) begin
+                if (decoder.imm_val[11:6] == 6'b010000) begin
                     if( opcode[6:2] == OP_IMM) aluS2[11:6] = 1'b0;
                     aluOp = ALU.SRA;
                 end else aluOp = ALU.SRL;

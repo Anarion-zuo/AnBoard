@@ -63,14 +63,9 @@ module ALU(
             ADD: begin
                 out = s1_signed + s2_signed;
             end
-            SUB: begin
-                out = s1_signed + ~s2_signed + 1;
-            end
-            SLT: begin
-                temp = s1 - s2;
-                out = temp[63] == 1'b1 ? 64'b1 : 64'b0;
-            end
-            SLTU: out = s1 < s2;
+            SUB: out = s1_signed + ~s2_signed + 1;
+            SLT: out = s1_signed < s2_signed ? 1 : 0;
+            SLTU: out = s1 < s2 ? 1 : 0;
             XOR: out = s1 ^ s2;
             NOR: out = ~(s1 | s2);
             SLL: out = s1 << s2;
