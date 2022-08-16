@@ -53,4 +53,12 @@ module InstrDecoder(
         .imm_val(imm_val)
     );
 
+    always @(instr) begin
+        $display("instr 0x%h", instr);
+        if (^instr === 1'bx) begin
+            $display("invalid instr");
+            $finish;
+        end
+    end
+
 endmodule

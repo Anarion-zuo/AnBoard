@@ -53,12 +53,17 @@ module Controller(
         instr_count = 0;
         temp = $fscanf(instr_count_fd, "%d", instr_count);
         instr_ptr = 0;
-        for (cur_instr_count = 0; cur_instr_count < instr_count; cur_instr_count = cur_instr_count + 1) begin
-             $display("--instr\ %d--", cur_instr_count);
-             #10;
-            instr_ptr = instr_ptr + 4;
-        end
-        $display("--executed %d instructions--", instr_count);
+        next_cycle = 1'b1;
+        // for (cur_instr_count = 0; cur_instr_count < instr_count; cur_instr_count = cur_instr_count + 1) begin
+            // $display("---instr\ %d---", cur_instr_count);
+            // if (^instr === 1'bx) begin
+            //     $display("---undefined instr---");
+            //     $finish;
+            // end
+        //     #10;
+        //     instr_ptr = instr_ptr + 4;
+        // end
+        // $display("---executed %d instructions---", instr_count);
         // $finish;
     end
 
@@ -87,9 +92,8 @@ module Controller(
     RegisterFile registerFile(
         // .we(reg_we),
         .addr1(register_src_1),
-        .addr2(register_src_1),
+        .addr2(register_src_2),
         .write_addr(register_dest),
-        .write_data(alu_out),
         .read_data1(reg_read_data1),
         .read_data2(reg_read_data2)
     );
@@ -119,83 +123,132 @@ module Controller(
 
     // fetch instruction
     reg instr_fetched = 1'b0;
-    always @(instr_ptr) begin
+    reg next_cycle = 1'b0, instr_fetch_issued = 1'b0;
+    always @(next_cycle) begin
         // fetch instr
+        if (next_cycle === 1'b1) begin
+        next_cycle = 1'b0;
+        instr_mem.launch = 1'b1;
+        instr_fetch_issued = 1'b1;
+        end
+    end
+    always @(instr_fetch_issued or instr_mem.done) begin
+        // intr fetched
+        if (instr_fetch_issued === 1'b1 && instr_mem.done === 1'b1) begin
+        instr_fetch_issued = 1'b0;
+        instr_mem.done = 1'b0;
         instr = instr_mem.data_reg[31:0];
         instr_fetched = 1;
+        end
     end
 
     // read register
-    reg regs_read = 1'b0;
     always @(instr_fetched) begin
         if (instr_fetched == 1'b1) begin
         instr_fetched = 1'b0;
         registerFile.re = 1'b1;
-        regs_read = 1'b1;
+        registerFile.we = 1'b0;
+        registerFile.launch = 1'b1;
         end
     end
-    // execute alu
-    reg instr_executed = 1'b0, is_valid_instr = 1'b1, aluout_write_regfile = 1'b0;
-    always @(regs_read) begin
-        if (regs_read == 1'b1) begin
-        regs_read = 1'b0;
+    // setup alu operands
+    reg alu_operand_ready = 1'b0, is_valid_instr = 1'b1, aluout_write_regfile = 1'b0;
+    always @(registerFile.done) begin
+        if (registerFile.done == 1'b1) begin
         case (opcode[6:2])
             OP_IMM: begin
                 // arith with immediate values
-                $display("opcode OP_IMM");
                 aluS1 = registerFile.read_data1;
                 aluS2 = imm_val;
-                case (funct3)
-                    3'b000: begin
-                        aluOp = ALU.ADD;
-                    end
-                    3'b100: begin
-                        aluOp = ALU.XOR;
-                    end
-                    3'b110: aluOp = ALU.OR;
-                    3'b111: aluOp = ALU.AND;
-                    3'b010: begin
-                        aluOp = ALU.SLT;
-                    end
-                    default: begin
-                        $display("unkown funct3 0b%b", funct3);
-                        is_valid_instr = 1'b0;
-                    end
-                endcase
                 aluout_write_regfile = 1'b1;
             end
             OP: begin
                 // arith with regs
+                aluS1 = registerFile.read_data1;
+                aluS2 = registerFile.read_data2;
+                aluout_write_regfile = 1'b1;
             end
             default: begin
                 $display("unknow opcode 0x%h", opcode);
                 is_valid_instr = 1'b0;
             end
         endcase
-        if (is_valid_instr == 1'b1) instr_executed = 1'b1;
+        if (is_valid_instr == 1'b1) alu_operand_ready = 1'b1;
         is_valid_instr = 1'b1;
+        end
+    end
+
+    reg alu_opcode_ready = 1'b0;
+    // setup alu arith type
+    always @(registerFile.done) begin
+        if (registerFile.done == 1'b1) begin
+        case (funct3)
+            3'b000: begin
+                if (imm_val[11:6] == 6'b010000) begin
+                    if (opcode[6:2] == OP_IMM) aluS2[11:6] = 1'b0;
+                    aluOp = ALU.SUB;
+                end else aluOp = ALU.ADD;
+            end
+            3'b010: aluOp = ALU.SLT;
+            3'b100: aluOp = ALU.XOR;
+            3'b110: aluOp = ALU.OR;
+            3'b111: aluOp = ALU.AND;
+            // shifts
+            3'b001: aluOp = ALU.SLL;
+            3'b101: begin
+                if (imm_val[11:6] == 6'b010000) begin
+                    if( opcode[6:2] == OP_IMM) aluS2[11:6] = 1'b0;
+                    aluOp = ALU.SRA;
+                end else aluOp = ALU.SRL;
+            end
+            default: begin
+                $display("unkown funct3 0b%b", funct3);
+                is_valid_instr = 1'b0;
+            end
+        endcase
+        end
+        alu_opcode_ready = 1'b1;
+    end
+
+    // execute alu
+    always @(alu_opcode_ready or alu_operand_ready) begin
+        if (alu_opcode_ready === 1'b1 && alu_operand_ready === 1'b1) begin
+        registerFile.done = 1'b0;
+        registerFile.re = 1'b0;
+        alu_opcode_ready = 1'b0;
+        alu_operand_ready = 1'b0;
+        alu.launch = 1'b1;
         end
     end
 
     // write back
     reg instr_regs_written = 1'b0;
-    always @(instr_executed) begin
-        if (instr_executed == 1'b1) begin
-        instr_executed = 1'b0;
+    always @(alu.done) begin
+        if (alu.done === 1'b1) begin
+        alu.done = 1'b0;
         if (aluout_write_regfile == 1'b1) begin
+            registerFile.write_data = alu_out;
             registerFile.we = 1'b1;
             aluout_write_regfile = 1'b0;
+            registerFile.launch = 1'b1;
         end
         instr_regs_written = 1'b1;
         end
     end
 
     // cycle done
-    always @(instr_regs_written) begin
-        if (instr_regs_written == 1'b1) begin
+    always @(instr_regs_written or registerFile.done) begin
+        if (instr_regs_written === 1'b1 && registerFile.done === 1'b1) begin
         instr_regs_written = 1'b0;
+        registerFile.done = 1'b0;
+        registerFile.we = 1'b0;
+        registerFile.re = 1'b0;
         `dump_regs(registerFile)
         `dump_regs_tofile(registerFile)
+
+        instr_ptr = instr_ptr + 4;
+        next_cycle = 1'b1;
+
         end
     end
 

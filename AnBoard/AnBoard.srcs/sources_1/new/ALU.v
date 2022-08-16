@@ -35,7 +35,10 @@ module ALU(
              AND = 4'b0000,
              OR = 4'b0001,
              XOR = 4'b0010,
-             NOR = 4'b1100;
+             NOR = 4'b1100,
+             SLL = 4'b1101,
+             SRL = 4'b1110,
+             SRA = 4'b1111;
 
     reg[64:0] out;
     assign out_reg = out[63:0];
@@ -46,15 +49,23 @@ module ALU(
     assign zf = ~|out[63:0];
     
     reg[63:0] temp;
+    reg launch = 1'b0, done = 1'b0;
+    reg signed [63:0] s1_signed, s2_signed;
     
-    always @(aluOp or s1 or s2) begin
+    always @(launch) begin
+        if (launch === 1'b1) begin
+        s1_signed = s1;
+        s2_signed = s2;
+        launch = 1'b0;
         case(aluOp)
             AND: out = s1 & s2;
             OR: out = s1 | s2;
             ADD: begin
-                out = s1 + s2;
+                out = s1_signed + s2_signed;
             end
-            SUB: out = s1 - s2;
+            SUB: begin
+                out = s1_signed + ~s2_signed + 1;
+            end
             SLT: begin
                 temp = s1 - s2;
                 out = temp[63] == 1'b1 ? 64'b1 : 64'b0;
@@ -62,8 +73,13 @@ module ALU(
             SLTU: out = s1 < s2;
             XOR: out = s1 ^ s2;
             NOR: out = ~(s1 | s2);
+            SLL: out = s1 << s2;
+            SRL: out = s1 >> s2;
+            SRA: out = s1_signed >>> s2_signed;
             default:
                 $display("unknown alu opcode 0x%h", aluOp);
         endcase
+        done = 1'b1;
+        end
     end
 endmodule

@@ -23,11 +23,10 @@ module RegisterFile(
     input [4:0] addr1,
     input [4:0] addr2,
     input [4:0] write_addr,
-    input [63:0] write_data,
     output reg[63:0] read_data1,
     output reg[63:0] read_data2
     );
-    reg we, re;
+    reg we, re, launch, done;
     reg [63:0] regs [31:0];
     integer reg_state_fd;
     initial begin
@@ -45,8 +44,10 @@ module RegisterFile(
             $fclose(reg_state_fd);
         end*/
     end
-
-    always @(addr1 or addr2 or we or write_data or write_addr) begin
+    reg [63:0] write_data;
+    always @(launch) begin
+        if (launch === 1'b1) begin
+        launch = 1'b0;
         if (we == 1'b1) begin
             regs[write_addr] = write_data;
             we = 1'b0;
@@ -55,6 +56,8 @@ module RegisterFile(
             read_data1 = regs[addr1];
             read_data2 = regs[addr2];
             re = 1'b0;
+        end
+        done = 1'b1;
         end
     end
     
